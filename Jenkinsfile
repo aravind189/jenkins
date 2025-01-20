@@ -17,12 +17,6 @@ pipeline {
                 sh 'mvn clean package'
             }
         }
-        stage('Run') {
-            steps {
-                echo 'Running the Java application...'
-                sh 'java -jar target/*.jar'
-            }
-        }
     }
     post {
         success {
