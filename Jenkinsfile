@@ -1,29 +1,21 @@
 pipeline {
     agent any
-    tools {
-        maven 'Maven' // Set up Maven in Jenkins (Manage Jenkins > Global Tool Configuration)
-        jdk 'Java'    // Set up JDK in Jenkins
-    }
     stages {
-        stage('Checkout Code') {
+        stage('Setup') {
             steps {
-                echo 'Cloning the repository...'
-                git branch: 'master', url: 'https://github.com/aravind189/jenkins.git'
+                echo "Branch: ${env.BRANCH_NAME}"
             }
         }
         stage('Build') {
+            when {
+                expression {
+                    return env.BRANCH_NAME == 'main' || env.BRANCH_NAME.startsWith('release/')
+                }
+            }
             steps {
-                echo 'Building the Java project with Maven...'
+                echo "Building only on main or release branches"
                 sh 'mvn clean package'
             }
-        }
-    }
-    post {
-        success {
-            echo 'Build and run were successful!'
-        }
-        failure {
-            echo 'Build or run failed. Check the logs.'
         }
     }
 }
